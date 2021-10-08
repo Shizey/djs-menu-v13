@@ -1,0 +1,18 @@
+{
+  "name": "djs-menu-v13",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "debug": "tsc && node example/test.js"
+  },
+  "author": "Shizey & Hason",
+  "license": "ISC",
+  "devDependencies": {
+    "discord.js": "^13.1.0"
+  },
+  "dependencies": {
+    "typescript": "^4.4.3"
+  }
+}
