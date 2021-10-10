@@ -8,9 +8,9 @@ client.on('ready', () => {
     user.send("Je suis en route.")
   })
   
-  client.users.fetch("312534493519020044").then((user) => {
-    user.send("Je suis en route.")
-  })
+  //client.users.fetch("312534493519020044").then((user) => {
+    //user.send("Je suis en route.")
+  //})
 })
 
 client.login("ODI5ODY1MDM1MzkxODI4MDE4.YG-WCg.hLl1EWN-E6zq96x8U1h6dWtp1No");
@@ -28,8 +28,8 @@ client.on('interactionCreate', async (interaction) => {
       const RedPage = new MenuPage().addEmbed(RedEmbed).addButton(redButton).addButton(blueButton).setId("RedMenu");
 
       const menu = new Menu(interaction).addPage(BluePage).addPage(RedPage).start("RedMenu");
-      console.log(menu)
       setTimeout(() => {
+        console.log("test");
         menu.stop()
       }, 5000);
     }
