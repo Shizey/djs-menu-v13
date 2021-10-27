@@ -1,29 +1,33 @@
-import { MenuPage } from "../Interfaces";
-import { EventEmitter} from "events";
+import {MenuPageInterface, MenuResolvable} from '../interfaces';
+import {EventEmitter} from 'events';
 
 import {
   CommandInteraction,
   MessageActionRow,
   MessageButton,
   ButtonInteraction,
-  InteractionCollector,
-  Interaction,
-} from "discord.js";
-
+} from 'discord.js';
+/**
+   */
 export class Menu {
-  pages: MenuPage[];
+  pages: MenuPageInterface[];
   collector: any;
   interaction: CommandInteraction;
   event: EventEmitter;
-
+  /**
+   * @param  {CommandInteraction} interaction
+   */
   constructor(interaction: CommandInteraction) {
     this.pages = [];
     this.interaction = interaction;
     this.collector = {};
     this.event = new EventEmitter();
   }
-
-  addPage(page: MenuPage) {
+  /**
+   * @param  {MenuPageInterface} page
+   * @return {MenuResolvable}
+   */
+  addPage(page: MenuPageInterface):MenuResolvable {
     this.pages.push(page);
     return {
       event: this.event,
@@ -37,37 +41,45 @@ export class Menu {
       displayPage: this.displayPage,
     };
   }
-
-  start(id: string) {
-    const startPage = id
-      ? this.pages.find((page) => page.id === id)
-      : this.pages[0];
+  /**
+   * @param  {string} id
+   * @return {any}
+   */
+  start(id: string):any {
+    const findPage = this.pages.find((page) => page.id === id);
+    const startPage = id ? findPage : this.pages[0];
     this.setPage(startPage);
     return {
       event: this.event,
-      stop: this.stop
+      stop: this.stop,
     };
   }
-
-  stop() {
-    this.event.emit("stopCollector")
+  /**
+   * @return {void}
+   */
+  stop():void {
+    this.event.emit('stopCollector');
   }
-
-  setPage(page?: MenuPage, iButton?: ButtonInteraction) {
+  /**
+   * @param  {MenuPageInterface} page?
+   * @param  {ButtonInteraction} iButton?
+   * @return {void}
+   */
+  setPage(page?: MenuPageInterface, iButton?: ButtonInteraction):void {
     this.displayPage(page, iButton);
     const filter = (i) =>
       i.user.id === this.interaction.user.id &&
-      i.customId.split(".")[1] === this.interaction.user.id;
+      i.customId.split('.')[1] === this.interaction.user.id;
     this.collector = this.interaction.channel?.createMessageComponentCollector(
-      { filter, time: 60000, max: 1 }
+        {filter, time: 60000, max: 1},
     );
 
-    this.event.once("stopCollector", () => {
-      this.collector.stop()
+    this.event.once('stopCollector', () => {
+      this.collector.stop();
     });
 
-    this.collector?.on("collect", (i) => {
-      const id = i.customId.split(".")[0];
+    this.collector?.on('collect', (i) => {
+      const id = i.customId.split('.')[0];
 
       const target = page?.buttons.find((button) => button.id === id)?.target;
       const newPage = this.pages.find((pageToFind) => pageToFind.id === target);
@@ -76,23 +88,27 @@ export class Menu {
       this.setPage(newPage, i);
     });
   }
-
-  displayPage(page?: MenuPage, iButton?: ButtonInteraction) {
-    const content = page?.content || ".";
+  /**
+   * @param  {MenuPageInterface} page?
+   * @param  {ButtonInteraction} iButton?
+   * @return {void}
+   */
+  displayPage(page?: MenuPageInterface, iButton?: ButtonInteraction):void {
+    const content = page?.content || '.';
     const buttons = page?.buttons || [];
     const raw = new MessageActionRow();
     for (const button of buttons) {
       raw.addComponents(
-        new MessageButton()
-          .setCustomId(`${button.id}.${this.interaction.user.id}`)
-          .setLabel(`${button.label}`)
-          .setStyle(button.style)
-          .setEmoji(button.emoji)
-          .setURL(`${button.url}`)
+          new MessageButton()
+              .setCustomId(`${button.id}.${this.interaction.user.id}`)
+              .setLabel(`${button.label}`)
+              .setStyle(button.style)
+              .setEmoji(button.emoji)
+              .setURL(`${button.url}`),
       );
     }
     if (iButton) {
-        iButton.update({
+      iButton.update({
         embeds: page?.embeds,
         content: `${content}`,
         components: [raw],

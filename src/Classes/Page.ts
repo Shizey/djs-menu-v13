@@ -1,35 +1,49 @@
-import { MessageEmbed } from "discord.js";
-import { MenuButton } from "../Interfaces";
-
+import {MessageEmbed} from 'discord.js';
+import {MenuButtonInterface, MenuPageInterface} from '../interfaces';
+/**
+   */
 export class MenuPage {
   id: string;
   embeds: MessageEmbed[];
   content: string;
-  buttons: MenuButton[];
-
+  buttons: MenuButtonInterface[];
+  /**
+   */
   constructor() {
-    this.id = "";
+    this.id = '';
     this.embeds = [];
-    this.content = "";
+    this.content = '';
     this.buttons = [];
   }
-
-  setId(id: string) {
+  /**
+   * @param  {string} id
+   * @return {MenuPageInterface}
+   */
+  setId(id: string):MenuPageInterface {
     this.id = id;
     return this;
   }
-
-  addEmbed(embed: MessageEmbed) {
+  /**
+   * @param  {MessageEmbed} embed
+   * @return {MenuPageInterface}
+   */
+  addEmbed(embed: MessageEmbed):MenuPageInterface {
     this.embeds.push(embed);
     return this;
   }
-
-  setContent(content: string) {
+  /**
+   * @param  {string} content
+   * @return {MenuPageInterface}
+   */
+  setContent(content: string):MenuPageInterface {
     this.content = content;
     return this;
   }
-
-  addButton(button: MenuButton) {
+  /**
+   * @param  {MenuButtonInterface} button
+   * @return {MenuPageInterface}
+   */
+  addButton(button: MenuButtonInterface):MenuPageInterface {
     this.buttons.push(button);
     return this;
   }

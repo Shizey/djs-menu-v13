@@ -1,8 +1,10 @@
 import {
   MessageButtonStyleResolvable,
   EmojiIdentifierResolvable,
-} from "discord.js";
-
+} from 'discord.js';
+import {MenuButtonInterface} from '../interfaces';
+/**
+   */
 export class MenuButton {
   label: string;
   style: MessageButtonStyleResolvable;
@@ -10,42 +12,61 @@ export class MenuButton {
   emoji: EmojiIdentifierResolvable;
   url: string;
   id: string;
-
+  /**
+   */
   constructor() {
-    this.label = "";
-    this.style = "PRIMARY";
-    this.target = "";
-    this.emoji = "";
-    this.url = "";
-    this.id = "";
+    this.label = '';
+    this.style = 'PRIMARY';
+    this.target = '';
+    this.emoji = '';
+    this.url = '';
+    this.id = '';
   }
-
-  setLabel(label: string) {
+  /**
+   * @param  {string} label
+   * @return {MenuButtonInterface}
+   */
+  setLabel(label: string):MenuButtonInterface {
     this.label = label;
     return this;
   }
-
-  setStyle(style: MessageButtonStyleResolvable) {
+  /**
+   * @param  {MessageButtonStyleResolvable} style
+   * @return {MenuButtonInterface}
+   */
+  setStyle(style: MessageButtonStyleResolvable):MenuButtonInterface {
     this.style = style;
     return this;
   }
-
-  setTarget(target: string) {
+  /**
+   * @param  {string} target
+   * @return {MenuButtonInterface}
+   */
+  setTarget(target: string):MenuButtonInterface {
     this.target = target;
     return this;
   }
-
-  setEmoji(emoji: EmojiIdentifierResolvable) {
+  /**
+   * @param  {EmojiIdentifierResolvable} emoji
+   * @return {MenuButtonInterface}
+   */
+  setEmoji(emoji: EmojiIdentifierResolvable):MenuButtonInterface {
     this.emoji = emoji;
     return this;
   }
-
-  setURL(url: string) {
+  /**
+   * @param  {string} url
+   * @return {MenuButtonInterface}
+   */
+  setURL(url: string):MenuButtonInterface {
     this.url = url;
     return this;
   }
-
-  setId(id: string) {
+  /**
+   * @param  {string} id
+   * @return {MenuButtonInterface}
+   */
+  setId(id: string):MenuButtonInterface {
     this.id = id;
     return this;
   }

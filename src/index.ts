@@ -1,5 +1,5 @@
-import {Menu} from "./Classes/Menu"
-import { MenuPage } from "./Classes/Page"
-import { MenuButton } from "./Classes/Button"
+import {Menu} from './Classes/Menu';
+import {MenuPage} from './Classes/Page';
+import {MenuButton} from './Classes/Button';
 
-export {Menu, MenuPage, MenuButton}
+export {Menu, MenuPage, MenuButton};
