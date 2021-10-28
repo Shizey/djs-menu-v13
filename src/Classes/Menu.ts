@@ -1,4 +1,4 @@
-import {MenuPageInterface, MenuResolvable} from '../interfaces';
+import {MenuPage} from './Page';
 import {EventEmitter} from 'events';
 
 import {
@@ -9,72 +9,63 @@ import {
 } from 'discord.js';
 /**
    */
-export class Menu {
-  pages: MenuPageInterface[];
+export class Menu extends EventEmitter {
+  pages: MenuPage[];
   collector: any;
   interaction: CommandInteraction;
-  event: EventEmitter;
+  ephemeral: boolean;
+  // event: EventEmitter;
   /**
    * @param  {CommandInteraction} interaction
    */
   constructor(interaction: CommandInteraction) {
+    super();
     this.pages = [];
     this.interaction = interaction;
     this.collector = {};
-    this.event = new EventEmitter();
+    this.ephemeral = false;
   }
   /**
-   * @param  {MenuPageInterface} page
-   * @return {MenuResolvable}
+   * @param  {MenuPage} page
+   * @return {Menu}
    */
-  addPage(page: MenuPageInterface):MenuResolvable {
+  addPage(page: MenuPage):Menu {
     this.pages.push(page);
-    return {
-      event: this.event,
-      pages: this.pages,
-      interaction: this.interaction,
-      collector: this.collector,
-      start: this.start,
-      stop: this.stop,
-      addPage: this.addPage,
-      setPage: this.setPage,
-      displayPage: this.displayPage,
-    };
+    return this;
   }
   /**
    * @param  {string} id
-   * @return {any}
+   * @return {Menu}
    */
-  start(id: string):any {
+  start(id: string):Menu {
     const findPage = this.pages.find((page) => page.id === id);
     const startPage = id ? findPage : this.pages[0];
     this.setPage(startPage);
-    return {
-      event: this.event,
-      stop: this.stop,
-    };
+    return this;
   }
   /**
    * @return {void}
    */
   stop():void {
-    this.event.emit('stopCollector');
+    this.emit('stop', this.interaction, this.pages);
   }
   /**
-   * @param  {MenuPageInterface} page?
+   * @param  {MenuPage} page?
    * @param  {ButtonInteraction} iButton?
    * @return {void}
    */
-  setPage(page?: MenuPageInterface, iButton?: ButtonInteraction):void {
+  setPage(page?: MenuPage, iButton?: ButtonInteraction):void {
     this.displayPage(page, iButton);
     const filter = (i) =>
       i.user.id === this.interaction.user.id &&
       i.customId.split('.')[1] === this.interaction.user.id;
     this.collector = this.interaction.channel?.createMessageComponentCollector(
-        {filter, time: 60000, max: 1},
+        {filter, time: page?.timeout, max: 1},
     );
 
-    this.event.once('stopCollector', () => {
+    this.emit('pageChanged', page, this.pages, this.interaction);
+
+    this.once('stop', () => {
       this.collector.stop();
     });
 
@@ -89,11 +80,19 @@ export class Menu {
     });
   }
   /**
-   * @param  {MenuPageInterface} page?
+   * @param {boolean} isEphemeral
+   * @return {Menu}
+   */
+  setEphemeral(isEphemeral:boolean):Menu {
+    this.ephemeral = isEphemeral;
+    return this;
+  }
+  /**
+   * @param  {MenuPage} page?
    * @param  {ButtonInteraction} iButton?
    * @return {void}
    */
-  displayPage(page?: MenuPageInterface, iButton?: ButtonInteraction):void {
+  displayPage(page?: MenuPage, iButton?: ButtonInteraction):void {
     const content = page?.content || '.';
     const buttons = page?.buttons || [];
     const raw = new MessageActionRow();
@@ -125,6 +124,7 @@ export class Menu {
           embeds: page?.embeds,
           content: `${content}`,
           components: [raw],
+          ephemeral: this.ephemeral,
         });
       }
     }

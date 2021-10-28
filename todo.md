@@ -1,1 +1,1 @@
-[] Custom time select Ephemeral
+mettre le select menu, mettre un event quand il rép pas assez vite, détailler les jsdoc avec des desc et faire la doc

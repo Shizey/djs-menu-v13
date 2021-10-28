@@ -1,12 +1,13 @@
 import {MessageEmbed} from 'discord.js';
-import {MenuButtonInterface, MenuPageInterface} from '../interfaces';
+import {MenuButton} from './Button';
 /**
    */
 export class MenuPage {
   id: string;
   embeds: MessageEmbed[];
   content: string;
-  buttons: MenuButtonInterface[];
+  buttons: MenuButton[];
+  timeout: number;
   /**
    */
   constructor() {
@@ -14,37 +15,46 @@ export class MenuPage {
     this.embeds = [];
     this.content = '';
     this.buttons = [];
+    this.timeout = 6000;
   }
   /**
    * @param  {string} id
-   * @return {MenuPageInterface}
+   * @return {MenuPage}
    */
-  setId(id: string):MenuPageInterface {
+  setId(id: string):MenuPage {
     this.id = id;
     return this;
   }
   /**
    * @param  {MessageEmbed} embed
-   * @return {MenuPageInterface}
+   * @return {MenuPage}
    */
-  addEmbed(embed: MessageEmbed):MenuPageInterface {
+  addEmbed(embed: MessageEmbed):MenuPage {
     this.embeds.push(embed);
     return this;
   }
   /**
    * @param  {string} content
-   * @return {MenuPageInterface}
+   * @return {MenuPage}
    */
-  setContent(content: string):MenuPageInterface {
+  setContent(content: string):MenuPage {
     this.content = content;
     return this;
   }
   /**
-   * @param  {MenuButtonInterface} button
-   * @return {MenuPageInterface}
+   * @param  {MenuButton} button
+   * @return {MenuPage}
    */
-  addButton(button: MenuButtonInterface):MenuPageInterface {
+  addButton(button: MenuButton):MenuPage {
     this.buttons.push(button);
+    return this;
+  }
+  /**
+   * @param {number} timeout
+   * @return {MenuPage}
+   */
+  setTimeout(timeout: number):MenuPage {
+    this.timeout = timeout;
     return this;
   }
 }

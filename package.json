@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npm run lint && tsc",
-    "debug": "npm run lint && tsc && node example/test.js",
+    "build": "tsc",
+    "debug": "tsc && node example/test.js",
     "lint": "npx tslint -c tslint.json 'src/**/*.ts'"
   },
   "author": "Shizey & Hason",

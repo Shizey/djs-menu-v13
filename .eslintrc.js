@@ -16,6 +16,6 @@ module.exports = {
     '@typescript-eslint',
   ],
   'rules': {
-    'linebreak-style': ['error', process.env.NODE_ENV==='prod'?'unix':'windows'], // eslint-disable-line
+    'linebreak-style': 0, // eslint-disable-line
   },
 };

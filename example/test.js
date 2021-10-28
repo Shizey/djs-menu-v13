@@ -1,37 +1,73 @@
-const { Client, Intents, MessageEmbed} = require('discord.js');
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
-const {MenuPage, MenuButton, Menu} = require("../build/index");
+const {Client, Intents, MessageEmbed} = require('discord.js');
+const botIntents = [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES];
+const client = new Client({intents: botIntents});
+const {MenuPage, MenuButton, Menu} = require('../build/index');
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
-  client.users.fetch("254316236178063361").then((user) => {
-    user.send("Je suis en route.")
-  })
-  
-  //client.users.fetch("312534493519020044").then((user) => {
-    //user.send("Je suis en route.")
-  //})
-})
+});
 
-client.login("ODI5ODY1MDM1MzkxODI4MDE4.YG-WCg.hLl1EWN-E6zq96x8U1h6dWtp1No");
+client.login('ODI5ODY1MDM1MzkxODI4MDE4.YG-WCg.hLl1EWN-E6zq96x8U1h6dWtp1No');
 
 client.on('interactionCreate', async (interaction) => {
   if (interaction.isCommand()) {
     if (interaction.commandName === 'test') {
-      const BlueEmbed = new MessageEmbed().setColor("BLUE").setTitle("Couleur de l'embed : BLEU");
-      const RedEmbed = new MessageEmbed().setColor("RED").setTitle("Couleur de l'embed : ROUGE");
+      const BlueEmbed = new MessageEmbed()
+          .setColor('BLUE')
+          .setTitle('Couleur de l\'embed : BLEU')
+          .setFooter('Le menu va se stop apres 6 interactions');
+      const RedEmbed = new MessageEmbed()
+          .setColor('RED')
+          .setTitle('Couleur de l\'embed : ROUGE')
+          .setFooter('Le menu va se stop apres 6 interactions');
 
-      const redButton = new MenuButton().setId("RED").setTarget("RedMenu").setLabel("Passer l'embed en rouge").setStyle("DANGER");
-      const blueButton = new MenuButton().setId("BLUE").setTarget("BlueMenu").setLabel("Passer l'embed en bleu").setStyle("PRIMARY");
+      const redButton = new MenuButton()
+          .setId('RED')
+          .setTarget('RedMenu')
+          .setLabel('Passer l\'embed en rouge')
+          .setStyle('DANGER');
 
-      const BluePage = new MenuPage().addEmbed(BlueEmbed).addButton(redButton).addButton(blueButton).setId("BlueMenu");
-      const RedPage = new MenuPage().addEmbed(RedEmbed).addButton(redButton).addButton(blueButton).setId("RedMenu");
+      const blueButton = new MenuButton()
+          .setId('BLUE')
+          .setTarget('BlueMenu')
+          .setLabel('Passer l\'embed en bleu')
+          .setStyle('PRIMARY');
 
-      const menu = new Menu(interaction).addPage(BluePage).addPage(RedPage).start("RedMenu");
-      setTimeout(() => {
-        console.log("test");
-        menu.stop()
-      }, 5000);
+      const BluePage = new MenuPage()
+          .addEmbed(BlueEmbed)
+          .addButton(redButton)
+          .setTimeout(10000)
+          .addButton(blueButton)
+          .setId('BlueMenu');
+      const RedPage = new MenuPage()
+          .addEmbed(RedEmbed)
+          .addButton(redButton)
+          .setTimeout(5000)
+          .addButton(blueButton)
+          .setId('RedMenu');
+
+      const menu = new Menu(interaction)
+          .addPage(BluePage)
+          .addPage(RedPage)
+          .setEphemeral(true)
+          .start('RedMenu');
+
+      let i = 0;
+
+      menu.on('pageChanged', () => {
+        i = i + 1;
+        if (i === 6) {
+          menu.stop();
+        }
+      });
+
+      const stopEmbed = new MessageEmbed()
+          .setColor('GREY')
+          .setTitle('Vous avez cliquez plus de 6 fois');
+
+      menu.on('stop', (interaction) => {
+        interaction.editReply({embeds: [stopEmbed], components: []});
+      });
     }
   }
-})
+});
