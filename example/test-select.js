@@ -1,7 +1,7 @@
 const {Client, Intents, MessageEmbed} = require('discord.js');
 const botIntents = [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES];
 const client = new Client({intents: botIntents});
-const {MenuSelectPage, Menu, MenuPage, MenuButton} = require('../build/index');
+const {MenuSelectPage, Menu, MenuPage} = require('../build/index');
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
@@ -32,11 +32,12 @@ client.on('interactionCreate', async (interaction) => {
               ],
           );
 
-      const BackMenuBtn = new MenuButton()
-          .setId('Back')
-          .setLabel('Changer la couleur')
-          .setTarget('select')
-          .setEmoji('⏪');
+      const BackMenuBtn = {
+        label: 'Changer la couleur',
+        target: 'select',
+        emoji: '⏪',
+        style: 'DANGER',
+      };
 
       const greenEmbed = new MessageEmbed()
           .setColor('GREEN')

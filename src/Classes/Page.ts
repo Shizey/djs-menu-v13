@@ -1,5 +1,28 @@
-import {MessageEmbed} from 'discord.js';
-import {MenuButton} from './Button';
+import {
+  EmojiIdentifierResolvable,
+  MessageButtonStyleResolvable,
+  MessageEmbed,
+} from 'discord.js';
+
+import randomId from '../Util/generateRandomId';
+
+type SingleButton = {
+  label: string;
+  style: MessageButtonStyleResolvable;
+  target: string;
+  emoji?: EmojiIdentifierResolvable;
+  url?: string;
+}
+
+type MenuButton = {
+  label: string;
+  style: MessageButtonStyleResolvable;
+  target: string;
+  id:string;
+  emoji?: EmojiIdentifierResolvable;
+  url?: string;
+}
+
 /**
    */
 export class MenuPage {
@@ -47,8 +70,15 @@ export class MenuPage {
    * @param  {MenuButton} button
    * @return {MenuPage}
    */
-  addButton(button: MenuButton):MenuPage {
-    this.buttons.push(button);
+  addButton(button: SingleButton):MenuPage {
+    this.buttons.push({
+      label: button.label,
+      emoji: button?.emoji,
+      target: button.target,
+      style: button.style,
+      url: button?.url,
+      id: randomId(),
+    });
     return this;
   }
   /**

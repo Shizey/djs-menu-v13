@@ -1,1 +1,1 @@
-détailler les jsdoc avec des desc et faire la doc, rajouter files, changer la class btn juste en un type, ajouter les target function, gerer erreurs comme quand on met pas un id valide
+détailler les jsdoc avec des desc et faire la doc, rajouter files, ajouter les target callback, gerer erreurs comme quand on met pas un id valide

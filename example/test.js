@@ -1,7 +1,7 @@
 const {Client, Intents, MessageEmbed} = require('discord.js');
 const botIntents = [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES];
 const client = new Client({intents: botIntents});
-const {MenuPage, MenuButton, Menu} = require('../build/index');
+const {MenuPage, Menu} = require('../build/index');
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
@@ -21,36 +21,36 @@ client.on('interactionCreate', async (interaction) => {
           .setTitle('Couleur de l\'embed : ROUGE')
           .setFooter('Le menu va se stop apres 6 interactions');
 
-      const redButton = new MenuButton()
-          .setId('RED')
-          .setTarget('RedMenu')
-          .setLabel('Passer l\'embed en rouge')
-          .setStyle('DANGER');
+      const redButton = {
+        label: 'Passer l\'embed en rouge',
+        style: 'DANGER',
+        target: 'RedPage',
+      };
 
-      const blueButton = new MenuButton()
-          .setId('BLUE')
-          .setTarget('BlueMenu')
-          .setLabel('Passer l\'embed en bleu')
-          .setStyle('PRIMARY');
+      const blueButton = {
+        label: 'Passer l\'embed en bleu',
+        style: 'PRIMARY',
+        target: 'BluePage',
+      };
 
       const BluePage = new MenuPage()
           .addEmbed(BlueEmbed)
           .addButton(redButton)
-          .setTimeout(10000)
           .addButton(blueButton)
-          .setId('BlueMenu');
+          .setTimeout(10000)
+          .setId('BluePage');
       const RedPage = new MenuPage()
           .addEmbed(RedEmbed)
           .addButton(redButton)
-          .setTimeout(5000)
           .addButton(blueButton)
-          .setId('RedMenu');
+          .setTimeout(5000)
+          .setId('RedPage');
 
       const menu = new Menu(interaction)
           .addPage(BluePage)
           .addPage(RedPage)
           .setEphemeral(true)
-          .start('RedMenu');
+          .start();
 
       let i = 0;
 
@@ -68,7 +68,7 @@ client.on('interactionCreate', async (interaction) => {
           .setColor('RED')
           .setTitle('Tu n\'as pas répondu assez vite');
 
-      menu.on('stop', (interaction, reason, pages) => {
+      menu.on('stop', (interaction, reason) => {
         if (reason === 'noReply' ) {
           interaction.editReply({embeds: [noResponseEmbed], components: []});
         } else {

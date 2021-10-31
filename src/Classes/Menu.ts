@@ -120,14 +120,19 @@ export class Menu extends EventEmitter {
       const buttons = btnPage?.buttons || [];
       const raw = new MessageActionRow();
       for (const button of buttons) {
-        raw.addComponents(
-            new MessageButton()
-                .setCustomId(`${button.id}.${this.interaction.user.id}`)
-                .setLabel(`${button.label}`)
-                .setStyle(button.style)
-                .setEmoji(button.emoji)
-                .setURL(`${button.url}`),
-        );
+        const btn = new MessageButton()
+            .setCustomId(`${button.id}.${this.interaction.user.id}`)
+            .setLabel(`${button.label}`)
+            .setStyle(button.style);
+        if (button.emoji) {
+          btn.setEmoji(button.emoji);
+        }
+
+        if (button?.url) {
+          btn.setURL(`${button?.url}`);
+        }
+
+        raw.addComponents(btn);
       }
       if (iButton) {
         iButton.update({
