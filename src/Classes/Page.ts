@@ -8,6 +8,7 @@ export class MenuPage {
   content: string;
   buttons: MenuButton[];
   timeout: number;
+  type:string;
   /**
    */
   constructor() {
@@ -16,6 +17,7 @@ export class MenuPage {
     this.content = '';
     this.buttons = [];
     this.timeout = 6000;
+    this.type = 'MenuPage';
   }
   /**
    * @param  {string} id

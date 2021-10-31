@@ -1,4 +1,5 @@
 import {MenuPage} from './Page';
+import {MenuSelectPage} from './SelectPage';
 import {EventEmitter} from 'events';
 
 import {
@@ -6,15 +7,18 @@ import {
   MessageActionRow,
   MessageButton,
   ButtonInteraction,
+  MessageSelectMenu,
 } from 'discord.js';
+
+type pagesType = MenuPage|MenuSelectPage;
+
 /**
    */
 export class Menu extends EventEmitter {
-  pages: MenuPage[];
+  pages: pagesType[];
   collector: any;
   interaction: CommandInteraction;
   ephemeral: boolean;
-  // event: EventEmitter;
   /**
    * @param  {CommandInteraction} interaction
    */
@@ -26,10 +30,10 @@ export class Menu extends EventEmitter {
     this.ephemeral = false;
   }
   /**
-   * @param  {MenuPage} page
+   * @param  {pagesType} page
    * @return {Menu}
    */
-  addPage(page: MenuPage):Menu {
+  addPage(page: pagesType):Menu {
     this.pages.push(page);
     return this;
   }
@@ -39,7 +43,7 @@ export class Menu extends EventEmitter {
    */
   start(id: string):Menu {
     const findPage = this.pages.find((page) => page.id === id);
-    const startPage = id ? findPage : this.pages[0];
+    const startPage = id && findPage ? findPage : this.pages[0];
     this.setPage(startPage);
     return this;
   }
@@ -47,14 +51,14 @@ export class Menu extends EventEmitter {
    * @return {void}
    */
   stop():void {
-    this.emit('stop', this.interaction, this.pages);
+    this.emit('stop', this.interaction, 'stop', this.pages);
   }
   /**
-   * @param  {MenuPage} page?
+   * @param  {pagesType} page?
    * @param  {ButtonInteraction} iButton?
    * @return {void}
    */
-  setPage(page?: MenuPage, iButton?: ButtonInteraction):void {
+  setPage(page?: pagesType, iButton?: ButtonInteraction):void {
     this.displayPage(page, iButton);
     const filter = (i) =>
       i.user.id === this.interaction.user.id &&
@@ -63,7 +67,7 @@ export class Menu extends EventEmitter {
         {filter, time: page?.timeout, max: 1},
     );
 
-    this.emit('pageChanged', page, this.pages, this.interaction);
+    this.emit('pageChanged', page, this.interaction, this.pages);
 
     this.once('stop', () => {
       this.collector.stop();
@@ -72,11 +76,28 @@ export class Menu extends EventEmitter {
     this.collector?.on('collect', (i) => {
       const id = i.customId.split('.')[0];
 
-      const target = page?.buttons.find((button) => button.id === id)?.target;
-      const newPage = this.pages.find((pageToFind) => pageToFind.id === target);
+      const btnPage = (page as MenuPage);
+      if (btnPage.type === 'MenuPage') {
+        const target = btnPage?.buttons.find(
+            (button) => button.id === id,
+        )?.target;
+        const newPage = this.pages.find((ptf) => ptf.id === target);
 
-      this.collector.stop();
-      this.setPage(newPage, i);
+        this.collector.stop();
+        this.setPage(newPage, i);
+      } else if (btnPage.type === 'MenuSelectPage') {
+        const target = i.values[0];
+        const newPage = this.pages.find((ptf) => ptf.id === target);
+
+        this.collector.stop();
+        this.setPage(newPage, i);
+      }
+    });
+
+    this.collector?.on('end', (collected) => {
+      if (collected.size === 0) {
+        this.emit('stop', this.interaction, 'noReply', this.pages);
+      }
     });
   }
   /**
@@ -88,44 +109,87 @@ export class Menu extends EventEmitter {
     return this;
   }
   /**
-   * @param  {MenuPage} page?
+   * @param  {pagesType} page?
    * @param  {ButtonInteraction} iButton?
    * @return {void}
    */
-  displayPage(page?: MenuPage, iButton?: ButtonInteraction):void {
-    const content = page?.content || '.';
-    const buttons = page?.buttons || [];
-    const raw = new MessageActionRow();
-    for (const button of buttons) {
-      raw.addComponents(
-          new MessageButton()
-              .setCustomId(`${button.id}.${this.interaction.user.id}`)
-              .setLabel(`${button.label}`)
-              .setStyle(button.style)
-              .setEmoji(button.emoji)
-              .setURL(`${button.url}`),
-      );
-    }
-    if (iButton) {
-      iButton.update({
-        embeds: page?.embeds,
-        content: `${content}`,
-        components: [raw],
-      });
-    } else {
-      if (this.interaction.replied) {
-        this.interaction.editReply({
-          embeds: page?.embeds,
+  displayPage(page?: pagesType, iButton?: ButtonInteraction):void {
+    const btnPage = (page as MenuPage);
+    if (btnPage.type === 'MenuPage') {
+      const content = page?.content || '.';
+      const buttons = btnPage?.buttons || [];
+      const raw = new MessageActionRow();
+      for (const button of buttons) {
+        raw.addComponents(
+            new MessageButton()
+                .setCustomId(`${button.id}.${this.interaction.user.id}`)
+                .setLabel(`${button.label}`)
+                .setStyle(button.style)
+                .setEmoji(button.emoji)
+                .setURL(`${button.url}`),
+        );
+      }
+      if (iButton) {
+        iButton.update({
+          embeds: btnPage?.embeds,
           content: `${content}`,
           components: [raw],
         });
       } else {
-        this.interaction.reply({
-          embeds: page?.embeds,
+        if (this.interaction.replied) {
+          this.interaction.editReply({
+            embeds: btnPage?.embeds,
+            content: `${content}`,
+            components: [raw],
+          });
+        } else {
+          this.interaction.reply({
+            embeds: btnPage?.embeds,
+            content: `${content}`,
+            components: [raw],
+            ephemeral: this.ephemeral,
+          });
+        }
+      }
+    } else {
+      const selectPage = (page as MenuSelectPage);
+      const content = page?.content || '.';
+      const selectMenuOptions = selectPage.options;
+
+      const raw = new MessageActionRow();
+
+      const selectMenu = new MessageSelectMenu()
+          .addOptions(selectMenuOptions)
+          .setCustomId(`${selectPage.id}.${this.interaction.user.id}`)
+          .setPlaceholder(selectPage.placeholder);
+
+      selectMenu.setMinValues(1);
+
+      selectMenu.setMaxValues(1);
+
+      raw.addComponents(selectMenu);
+
+      if (iButton) {
+        iButton.update({
+          embeds: selectPage?.embeds,
           content: `${content}`,
           components: [raw],
-          ephemeral: this.ephemeral,
         });
+      } else {
+        if (this.interaction.replied) {
+          this.interaction.editReply({
+            embeds: selectPage?.embeds,
+            content: `${content}`,
+            components: [raw],
+          });
+        } else {
+          this.interaction.reply({
+            embeds: selectPage?.embeds,
+            content: `${content}`,
+            components: [raw],
+            ephemeral: this.ephemeral,
+          });
+        }
       }
     }
   }

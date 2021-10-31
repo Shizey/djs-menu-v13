@@ -1,1 +1,1 @@
-mettre le select menu, mettre un event quand il rép pas assez vite, détailler les jsdoc avec des desc et faire la doc
+détailler les jsdoc avec des desc et faire la doc, rajouter files, changer la class btn juste en un type, ajouter les target function, gerer erreurs comme quand on met pas un id valide

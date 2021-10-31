@@ -64,9 +64,16 @@ client.on('interactionCreate', async (interaction) => {
       const stopEmbed = new MessageEmbed()
           .setColor('GREY')
           .setTitle('Vous avez cliquez plus de 6 fois');
+      const noResponseEmbed = new MessageEmbed()
+          .setColor('RED')
+          .setTitle('Tu n\'as pas répondu assez vite');
 
-      menu.on('stop', (interaction) => {
-        interaction.editReply({embeds: [stopEmbed], components: []});
+      menu.on('stop', (interaction, reason, pages) => {
+        if (reason === 'noReply' ) {
+          interaction.editReply({embeds: [noResponseEmbed], components: []});
+        } else {
+          interaction.editReply({embeds: [stopEmbed], components: []});
+        }
       });
     }
   }
