@@ -1,8 +1,11 @@
 import {
+  CommandInteraction,
   EmojiIdentifierResolvable,
   MessageButtonStyleResolvable,
   MessageEmbed,
 } from 'discord.js';
+import {Menu, MenuSelectPage} from '..';
+
 
 import randomId from '../Util/generateRandomId';
 
@@ -17,7 +20,9 @@ type SingleButton = {
 type MenuButton = {
   label: string;
   style: MessageButtonStyleResolvable;
-  target: string;
+  target: string|((
+    page:MenuPage|MenuSelectPage, interaction:CommandInteraction, menu:Menu
+    ) => void);
   id:string;
   emoji?: EmojiIdentifierResolvable;
   url?: string;

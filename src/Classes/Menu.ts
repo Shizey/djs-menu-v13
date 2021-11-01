@@ -6,7 +6,6 @@ import {
   CommandInteraction,
   MessageActionRow,
   MessageButton,
-  ButtonInteraction,
   MessageSelectMenu,
 } from 'discord.js';
 
@@ -54,12 +53,11 @@ export class Menu extends EventEmitter {
     this.emit('stop', this.interaction, 'stop', this.pages);
   }
   /**
-   * @param  {pagesType} page?
-   * @param  {ButtonInteraction} iButton?
+   * @param  {pagesType} page
    * @return {void}
    */
-  setPage(page?: pagesType, iButton?: ButtonInteraction):void {
-    this.displayPage(page, iButton);
+  setPage(page: pagesType):void {
+    this.displayPage(page);
     const filter = (i) =>
       i.user.id === this.interaction.user.id &&
       i.customId.split('.')[1] === this.interaction.user.id;
@@ -75,22 +73,35 @@ export class Menu extends EventEmitter {
 
     this.collector?.on('collect', (i) => {
       const id = i.customId.split('.')[0];
+      i.deferUpdate();
 
       const btnPage = (page as MenuPage);
       if (btnPage.type === 'MenuPage') {
-        const target = btnPage?.buttons.find(
+        const findBtn = btnPage.buttons.find(
             (button) => button.id === id,
-        )?.target;
-        const newPage = this.pages.find((ptf) => ptf.id === target);
+        );
+        if (findBtn && typeof findBtn.target !== 'function') {
+          const newPage = this.pages.find((ptf) => ptf.id === findBtn.target);
 
-        this.collector.stop();
-        this.setPage(newPage, i);
+          this.collector.stop();
+          if (newPage) this.setPage(newPage);
+        } else if (findBtn) {
+          const target = findBtn.target;
+          const funcTarget = (
+            target as (
+              page:MenuPage|MenuSelectPage,
+              interaction:CommandInteraction,
+              Menu:this
+              ) => void
+          );
+          funcTarget(page, this.interaction, this);
+        }
       } else if (btnPage.type === 'MenuSelectPage') {
         const target = i.values[0];
         const newPage = this.pages.find((ptf) => ptf.id === target);
 
         this.collector.stop();
-        this.setPage(newPage, i);
+        if (newPage) this.setPage(newPage);
       }
     });
 
@@ -110,10 +121,9 @@ export class Menu extends EventEmitter {
   }
   /**
    * @param  {pagesType} page?
-   * @param  {ButtonInteraction} iButton?
    * @return {void}
    */
-  displayPage(page?: pagesType, iButton?: ButtonInteraction):void {
+  displayPage(page?: pagesType):void {
     const btnPage = (page as MenuPage);
     if (btnPage.type === 'MenuPage') {
       const content = page?.content || '.';
@@ -134,27 +144,19 @@ export class Menu extends EventEmitter {
 
         raw.addComponents(btn);
       }
-      if (iButton) {
-        iButton.update({
+      if (this.interaction.replied) {
+        this.interaction.editReply({
           embeds: btnPage?.embeds,
           content: `${content}`,
           components: [raw],
         });
       } else {
-        if (this.interaction.replied) {
-          this.interaction.editReply({
-            embeds: btnPage?.embeds,
-            content: `${content}`,
-            components: [raw],
-          });
-        } else {
-          this.interaction.reply({
-            embeds: btnPage?.embeds,
-            content: `${content}`,
-            components: [raw],
-            ephemeral: this.ephemeral,
-          });
-        }
+        this.interaction.reply({
+          embeds: btnPage?.embeds,
+          content: `${content}`,
+          components: [raw],
+          ephemeral: this.ephemeral,
+        });
       }
     } else {
       const selectPage = (page as MenuSelectPage);
@@ -174,27 +176,19 @@ export class Menu extends EventEmitter {
 
       raw.addComponents(selectMenu);
 
-      if (iButton) {
-        iButton.update({
+      if (this.interaction.replied) {
+        this.interaction.editReply({
           embeds: selectPage?.embeds,
           content: `${content}`,
           components: [raw],
         });
       } else {
-        if (this.interaction.replied) {
-          this.interaction.editReply({
-            embeds: selectPage?.embeds,
-            content: `${content}`,
-            components: [raw],
-          });
-        } else {
-          this.interaction.reply({
-            embeds: selectPage?.embeds,
-            content: `${content}`,
-            components: [raw],
-            ephemeral: this.ephemeral,
-          });
-        }
+        this.interaction.reply({
+          embeds: selectPage?.embeds,
+          content: `${content}`,
+          components: [raw],
+          ephemeral: this.ephemeral,
+        });
       }
     }
   }

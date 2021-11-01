@@ -39,6 +39,15 @@ client.on('interactionCreate', async (interaction) => {
         style: 'DANGER',
       };
 
+      const confColor = {
+        label: 'Confirmer cette couleur',
+        target: (page, interaction, menu) => {
+          menu.stop();
+          interaction.editReply({content: 'ouééééé'});
+        },
+        style: 'SUCCESS',
+      };
+
       const greenEmbed = new MessageEmbed()
           .setColor('GREEN')
           .setTitle('L\'embed est vert');
@@ -49,12 +58,14 @@ client.on('interactionCreate', async (interaction) => {
       const PageVerte = new MenuPage()
           .setId('PageVerte')
           .setTimeout(100000)
+          .addButton(confColor)
           .addButton(BackMenuBtn)
           .addEmbed(greenEmbed);
 
       const PageRouge = new MenuPage()
           .setId('PageRouge')
           .setTimeout(100000)
+          .addButton(confColor)
           .addButton(BackMenuBtn)
           .addEmbed(redEmbed);
 
