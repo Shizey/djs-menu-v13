@@ -1,6 +1,7 @@
 import {
   CommandInteraction,
   EmojiIdentifierResolvable,
+  MessageAttachment,
   MessageButtonStyleResolvable,
   MessageEmbed,
 } from 'discord.js';
@@ -35,6 +36,7 @@ export class MenuPage {
   embeds: MessageEmbed[];
   content: string;
   buttons: MenuButton[];
+  files: MessageAttachment[];
   timeout: number;
   type:string;
   /**
@@ -42,6 +44,7 @@ export class MenuPage {
   constructor() {
     this.id = '';
     this.embeds = [];
+    this.files = [];
     this.content = '';
     this.buttons = [];
     this.timeout = 6000;
@@ -92,6 +95,14 @@ export class MenuPage {
    */
   setTimeout(timeout: number):MenuPage {
     this.timeout = timeout;
+    return this;
+  }
+  /**
+   * @param {file} file
+   * @return {MenuPage}
+   */
+  addFile(file: MessageAttachment):MenuPage {
+    this.files.push(file);
     return this;
   }
 }

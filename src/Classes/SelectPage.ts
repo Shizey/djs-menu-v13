@@ -1,5 +1,6 @@
 import {
   EmojiIdentifierResolvable,
+  MessageAttachment,
   MessageEmbed,
   MessageSelectOptionData,
 } from 'discord.js';
@@ -17,6 +18,7 @@ export class MenuSelectPage {
   id: string;
   placeholder: string;
   options: MessageSelectOptionData[];
+  files: MessageAttachment[];
   content: string;
   timeout: number;
   embeds: MessageEmbed[];
@@ -26,6 +28,7 @@ export class MenuSelectPage {
   constructor() {
     this.id = '';
     this.placeholder = '';
+    this.files = [];
     this.options = [];
     this.content = '';
     this.timeout = 6000;
@@ -98,6 +101,15 @@ export class MenuSelectPage {
    */
   setTimeout(timeout: number):MenuSelectPage {
     this.timeout = timeout;
+    return this;
+  }
+
+  /**
+   * @param  {MessageAttachment} file
+   *  @return {MenuSelectPage}
+   *  */
+  addFile(file: MessageAttachment):MenuSelectPage {
+    this.files.push(file);
     return this;
   }
 }

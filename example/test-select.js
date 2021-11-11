@@ -15,6 +15,7 @@ client.on('interactionCreate', async (interaction) => {
       const SelectPage = new MenuSelectPage()
           .setId('select')
           .setPlaceholder('De quelle couleur doit être l\'embed ?')
+          .addFile('./carre.png')
           .addOptions(
               [
                 {
@@ -60,12 +61,14 @@ client.on('interactionCreate', async (interaction) => {
           .setTimeout(100000)
           .addButton(confColor)
           .addButton(BackMenuBtn)
+          .addFile('./carre.png')
           .addEmbed(greenEmbed);
 
       const PageRouge = new MenuPage()
           .setId('PageRouge')
           .setTimeout(100000)
           .addButton(confColor)
+          .addFile('./carre.png')
           .addButton(BackMenuBtn)
           .addEmbed(redEmbed);
 

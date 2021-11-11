@@ -1,1 +1,1 @@
-détailler les jsdoc avec des desc et faire la doc, rajouter files, ajouter les target callback, gerer erreurs comme quand on met pas un id valide
+détailler les jsdoc avec des desc et faire la doc, gerer erreurs comme quand on met pas un id valide

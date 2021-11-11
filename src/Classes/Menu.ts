@@ -149,6 +149,7 @@ export class Menu extends EventEmitter {
           embeds: btnPage?.embeds,
           content: `${content}`,
           components: [raw],
+          files: btnPage?.files,
         });
       } else {
         this.interaction.reply({
@@ -156,6 +157,7 @@ export class Menu extends EventEmitter {
           content: `${content}`,
           components: [raw],
           ephemeral: this.ephemeral,
+          files: btnPage?.files,
         });
       }
     } else {
@@ -181,6 +183,7 @@ export class Menu extends EventEmitter {
           embeds: selectPage?.embeds,
           content: `${content}`,
           components: [raw],
+          files: selectPage?.files,
         });
       } else {
         this.interaction.reply({
@@ -188,6 +191,7 @@ export class Menu extends EventEmitter {
           content: `${content}`,
           components: [raw],
           ephemeral: this.ephemeral,
+          files: selectPage?.files,
         });
       }
     }
