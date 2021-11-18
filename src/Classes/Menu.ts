@@ -12,13 +12,17 @@ import {
 type pagesType = MenuPage|MenuSelectPage;
 
 /**
-   */
+ * The class that handle all the Menu logic
+ * @class Menu
+ * @extends EventEmitter
+*/
 export class Menu extends EventEmitter {
   pages: pagesType[];
   collector: any;
   interaction: CommandInteraction;
   ephemeral: boolean;
   /**
+   * The interaction that the menu will use.
    * @param  {CommandInteraction} interaction
    */
   constructor(interaction: CommandInteraction) {
@@ -29,6 +33,7 @@ export class Menu extends EventEmitter {
     this.ephemeral = false;
   }
   /**
+   * A function for add Page in the Menu
    * @param  {pagesType} page
    * @return {Menu}
    */
@@ -37,6 +42,7 @@ export class Menu extends EventEmitter {
     return this;
   }
   /**
+   * A function for start the menu
    * @param  {string} id
    * @return {Menu}
    */
@@ -47,45 +53,63 @@ export class Menu extends EventEmitter {
     return this;
   }
   /**
+   * A function for stop the menu
    * @return {void}
    */
   stop():void {
     this.emit('stop', this.interaction, 'stop', this.pages);
   }
   /**
+   * A function to set the page with a given MenuPage
    * @param  {pagesType} page
    * @return {void}
    */
   setPage(page: pagesType):void {
     this.displayPage(page);
+    // This filter check by spliting the customId
+    // If there is a ID linked to the button
+    // Example : myid.123456789
     const filter = (i) =>
       i.user.id === this.interaction.user.id &&
       i.customId.split('.')[1] === this.interaction.user.id;
+
     this.collector = this.interaction.channel?.createMessageComponentCollector(
         {filter, time: page?.timeout, max: 1},
     );
 
+    // When the page is set, that mean the page changed.
     this.emit('pageChanged', page, this.interaction, this.pages);
 
+    // Stop the collector if the stop event is emitted
     this.once('stop', () => {
       this.collector.stop();
     });
 
     this.collector?.on('collect', (i) => {
+      // Get the ID of the button
       const id = i.customId.split('.')[0];
       i.deferUpdate();
 
       const btnPage = (page as MenuPage);
       if (btnPage.type === 'MenuPage') {
+        // Get the button by the ID
         const findBtn = btnPage.buttons.find(
             (button) => button.id === id,
         );
+
         if (findBtn && typeof findBtn.target !== 'function') {
-          const newPage = this.pages.find((ptf) => ptf.id === findBtn.target);
+          // Get the target from the button
+          // To know what is the next page to display
+          const target = findBtn.target;
+
+
+          // Find the page to display with the target
+          const nextPage = this.pages.find((ptf) => ptf.id === target);
 
           this.collector.stop();
-          if (newPage) this.setPage(newPage);
+          if (nextPage) this.setPage(nextPage);
         } else if (findBtn) {
+          // Execute the function of the target with parameters
           const target = findBtn.target;
           const funcTarget = (
             target as (
@@ -97,29 +121,36 @@ export class Menu extends EventEmitter {
           funcTarget(page, this.interaction, this);
         }
       } else if (btnPage.type === 'MenuSelectPage') {
+        // TODO : Add the function for the select page
+        // With a select menu the value is the target
         const target = i.values[0];
-        const newPage = this.pages.find((ptf) => ptf.id === target);
+
+        // Find the page to display with the target
+        const nextPage = this.pages.find((ptf) => ptf.id === target);
 
         this.collector.stop();
-        if (newPage) this.setPage(newPage);
+        if (nextPage) this.setPage(nextPage);
       }
     });
 
     this.collector?.on('end', (collected) => {
       if (collected.size === 0) {
+        // If the menu don't get any response stop the menu with noReply reason
         this.emit('stop', this.interaction, 'noReply', this.pages);
       }
     });
   }
   /**
+   * A function for make all the message in the menu epehemeral
    * @param {boolean} isEphemeral
    * @return {Menu}
    */
-  setEphemeral(isEphemeral:boolean):Menu {
+  IsEphemeral(isEphemeral:boolean):Menu {
     this.ephemeral = isEphemeral;
     return this;
   }
   /**
+   * A function to display a page given page
    * @param  {pagesType} page?
    * @return {void}
    */

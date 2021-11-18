@@ -13,7 +13,9 @@ type SelectChoice = {
 }
 
 /**
-   */
+ * The class that represents a page with the Discord Select Menu in a menu.
+ * @class MenuSelectPage
+*/
 export class MenuSelectPage {
   id: string;
   placeholder: string;
@@ -23,6 +25,7 @@ export class MenuSelectPage {
   timeout: number;
   embeds: MessageEmbed[];
   type: string;
+
   /**
    */
   constructor() {
@@ -36,6 +39,8 @@ export class MenuSelectPage {
     this.embeds = [];
   }
   /**
+   * A function for set the ID of the page.
+   * This ID will be used to identify the page in the button with target.
    * @param  {string} id
    * @return {MenuSelectPage}
    */
@@ -44,6 +49,7 @@ export class MenuSelectPage {
     return this;
   }
   /**
+   * A function for set the placeholder of the Discord Select Menu.
    * @param  {string} placeholder
    * @return {MenuSelectPage}
    */
@@ -52,6 +58,7 @@ export class MenuSelectPage {
     return this;
   }
   /**
+   * A function for add embed that will display in the message page.
    * @param  {MessageEmbed} embed
    * @return {MenuSelectPage}
    */
@@ -60,6 +67,10 @@ export class MenuSelectPage {
     return this;
   }
   /**
+   * A function for add all the options in the Discord Select Menu.
+   * The difference between normal choices in Select Menu and SelectChoice
+   * Is SelectChoice have a target instead of a value
+   * But it's just for know that the value of the select menu is the target.
    * @param  {SelectChoice[]} options
    * @return {MenuSelectPage}
    */
@@ -75,6 +86,7 @@ export class MenuSelectPage {
     return this;
   }
   /**
+   * The same function as addOptions but for one option
    * @param  {SelectChoice} option
    * @return {MenuSelectPage}
    */
@@ -88,6 +100,7 @@ export class MenuSelectPage {
     return this;
   }
   /**
+   * A function for set the content of the Discord message.
    * @param  {string} content
    * @return {MenuSelectPage}
    */
@@ -96,6 +109,8 @@ export class MenuSelectPage {
     return this;
   }
   /**
+   * A function for set the timeout
+   * before that you are unable to interact with the page.
    * @param {number} timeout
    * @return {MenuSelectPage}
    */
@@ -105,9 +120,10 @@ export class MenuSelectPage {
   }
 
   /**
+   * A function for add a file that will displayed in the page.
    * @param  {MessageAttachment} file
-   *  @return {MenuSelectPage}
-   *  */
+   * @return {MenuSelectPage}
+   */
   addFile(file: MessageAttachment):MenuSelectPage {
     this.files.push(file);
     return this;

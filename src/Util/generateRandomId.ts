@@ -1,4 +1,5 @@
 /**
+ * A simple function for generate a random id.
  * @return {string}
  */
 export default function randomId():string {

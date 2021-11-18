@@ -1,1 +1,0 @@
-détailler les jsdoc avec des desc et faire la doc, gerer erreurs comme quand on met pas un id valide
