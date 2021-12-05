@@ -7,7 +7,7 @@ client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
 
-client.login('OTA4MDkxMTI1Njk5NjA0NTIw.YYwrww.uJ2LIyAmV1zCH3kIRWyk3NyKC1I');
+client.login('your token');
 
 client.on('interactionCreate', async (interaction) => {
   if (interaction.isCommand()) {

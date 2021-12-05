@@ -125,7 +125,7 @@ menu.on('pageChanged', (page, interaction, pages) => {
 
 ### Menu with Select Menu
 
-**You can also use select menu for your menus with buttons.**
+**You can also use select menu with buttons.**
 [Check this example to know how](https://github.com/Shizey/djs-menu-v13/blob/main/examples/selectMenu.js)
 
 ## Documentation
