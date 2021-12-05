@@ -13,7 +13,7 @@
 
 ## Usefull link
 
-- Documentation
+- [Documentation](https://shizey.github.io/djs-menu-v13/)
 - [GitHub Page](https://github.com/Shizey/djs-menu-v13)
 
 ## How to use it ?
