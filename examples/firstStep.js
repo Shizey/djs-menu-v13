@@ -62,7 +62,7 @@ client.on('interactionCreate', async (interaction) => {
           .start('firstPage');
 
       menu.on('stop', (interaction, reason) => {
-        if (reason === 'noReply' ) {
+        if (reason === 'noReply') {
           interaction.editReply({
             embeds: [],
             components: [],

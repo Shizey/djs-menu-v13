@@ -1,32 +1,9 @@
 import {
-  CommandInteraction,
-  EmojiIdentifierResolvable,
   MessageAttachment,
   MessageEmbed,
 } from 'discord.js';
 import randomId from '../Util/generateRandomId';
-import {Menu} from './Menu';
-import {MenuPage} from './Page';
-
-type SelectChoice = {
-  target: string|((
-    page:MenuPage|MenuSelectPage, interaction:CommandInteraction, menu:Menu
-    ) => void);
-  label: string;
-  description?: string;
-  emoji?: EmojiIdentifierResolvable;
-}
-
-type MenuSelectChoice = {
-  target: string|((
-    page:MenuPage|MenuSelectPage, interaction:CommandInteraction, menu:Menu
-    ) => void);
-  value: string;
-  label: string;
-  description?: string;
-  emoji?: EmojiIdentifierResolvable;
-}
-
+import {MenuSelectChoice, SelectChoice} from '..';
 /**
  * The class that represents a page with the Discord Select Menu in a menu.
  * @class MenuSelectPage

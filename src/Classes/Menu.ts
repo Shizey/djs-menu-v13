@@ -7,13 +7,13 @@ import {
   MessageButton,
   MessageSelectMenu,
 } from 'discord.js';
-
-type pagesType = MenuPage|MenuSelectPage;
+import {pagesType} from '..';
 
 /**
  * The class that handle all the Menu logic
  * @class Menu
  * @extends EventEmitter
+ * @noInheritDoc
 */
 export class Menu extends EventEmitter {
   pages: pagesType[];

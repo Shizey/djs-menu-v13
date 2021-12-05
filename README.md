@@ -17,7 +17,7 @@
 
 First you need to install the module with
 
-```node
+```js
 npm i djs-menu-v13
 ```
 
@@ -29,7 +29,7 @@ import {Menu, MenuPage} from 'djs-menu-v13';
 const {Menu, MenuPage} = require('djs-menu-v13');
 ```
 
-**For this first example, we gonna make two page :**
+**For this example, we gonna make two pages :**
 
 - The first one with a basic embed and a button to go to the second page
 - The second one with a button to return to the first page and a button to exit the menu
@@ -65,7 +65,7 @@ const exitBtn = {
 ```
 
 Then we need to create two embeds for our pages.
-**You don't need embed for have a page you can just put a content**
+**You don't have to use an embed to make a page, just a content is enough.**
 
 ```js
 const firstEmbed = new MessageEmbed()
@@ -121,17 +121,13 @@ menu.on('pageChanged', (page, interaction, pages) => {
 });
 ```
 
+[Full code example here](https://github.com/Shizey/djs-menu-v13/blob/main/examples/firstStep.js)
+
 ### Menu with Select Menu
 
-You can also use select menu for your menus with buttons.
-Check this example to know how
+**You can also use select menu for your menus with buttons.**
+[Check this example to know how](https://github.com/Shizey/djs-menu-v13/blob/main/examples/selectMenu.js)
 
-### Menu Page
+## Documentation
 
-#### Single Button
-
-### Select Menu
-
-#### Select Button
-
-### Menu
+For more information visit the [Documentation page](link)
