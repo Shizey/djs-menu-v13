@@ -1,7 +1,6 @@
 import {MenuPage} from './Page';
 import {MenuSelectPage} from './SelectPage';
 import {EventEmitter} from 'events';
-
 import {
   CommandInteraction,
   MessageActionRow,
@@ -38,6 +37,7 @@ export class Menu extends EventEmitter {
    * @return {Menu}
    */
   addPage(page: pagesType):Menu {
+    if (!page) throw new Error('The page is undefined');
     this.pages.push(page);
     return this;
   }
@@ -47,7 +47,10 @@ export class Menu extends EventEmitter {
    * @return {Menu}
    */
   start(id: string):Menu {
+    if (!id) throw new Error('The id is undefined');
+    if (!this.interaction) throw new Error('The interaction is invalid');
     const findPage = this.pages.find((page) => page.id === id);
+    if (!findPage) throw new Error(`The page with id ${id} was not found`);
     const startPage = id && findPage ? findPage : this.pages[0];
     this.setPage(startPage);
     return this;
@@ -87,11 +90,10 @@ export class Menu extends EventEmitter {
 
     this.collector?.on('collect', (i) => {
       // Get the ID of the button
-      const id = i.customId.split('.')[0];
       i.deferUpdate();
-
       const btnPage = (page as MenuPage);
       if (btnPage.type === 'MenuPage') {
+        const id = i.customId.split('.')[0];
         // Get the button by the ID
         const findBtn = btnPage.buttons.find(
             (button) => button.id === id,
@@ -101,7 +103,6 @@ export class Menu extends EventEmitter {
           // Get the target from the button
           // To know what is the next page to display
           const target = findBtn.target;
-
 
           // Find the page to display with the target
           const nextPage = this.pages.find((ptf) => ptf.id === target);
@@ -121,15 +122,37 @@ export class Menu extends EventEmitter {
           funcTarget(page, this.interaction, this);
         }
       } else if (btnPage.type === 'MenuSelectPage') {
-        // TODO : Add the function for the select page
-        // With a select menu the value is the target
-        const target = i.values[0];
+        // Get the value of the select wich is randomId.pageId
+        const value = i.values[0].split('.');
 
-        // Find the page to display with the target
-        const nextPage = this.pages.find((ptf) => ptf.id === target);
+        // Find the page who is linked to the select
+        const currentPage = this.pages.find((ptf) => ptf.id === value[1]);
 
-        this.collector.stop();
-        if (nextPage) this.setPage(nextPage);
+        // Find the target of the select
+        const currentChoice = (currentPage as MenuSelectPage).options.find(
+            (option) => option.value.split('.')[0] === value[0],
+        );
+
+        if (!currentChoice) {
+          throw new Error('The target was not found');
+        }
+
+        if (typeof currentChoice.target === 'function') {
+          const funcTarget = (
+            currentChoice.target as (
+              page:MenuPage|MenuSelectPage,
+              interaction:CommandInteraction,
+              Menu:this
+              ) => void
+          );
+          funcTarget(page, this.interaction, this);
+        } else {
+          this.collector.stop();
+          const nextPage = this.pages.find(
+              (ptf) => ptf.id === currentChoice.target,
+          );
+          if (nextPage) this.setPage(nextPage);
+        }
       }
     });
 
@@ -145,7 +168,7 @@ export class Menu extends EventEmitter {
    * @param {boolean} isEphemeral
    * @return {Menu}
    */
-  IsEphemeral(isEphemeral:boolean):Menu {
+  isEphemeral(isEphemeral:boolean):Menu {
     this.ephemeral = isEphemeral;
     return this;
   }
@@ -175,6 +198,8 @@ export class Menu extends EventEmitter {
 
         raw.addComponents(btn);
       }
+
+      // FIXME : Find a way to not have duplicate image
       if (this.interaction.replied) {
         this.interaction.editReply({
           embeds: btnPage?.embeds,
@@ -209,6 +234,7 @@ export class Menu extends EventEmitter {
 
       raw.addComponents(selectMenu);
 
+      // FIXME : Find a way to not have duplicate image
       if (this.interaction.replied) {
         this.interaction.editReply({
           embeds: selectPage?.embeds,

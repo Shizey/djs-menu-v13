@@ -60,6 +60,7 @@ export class MenuPage {
    * @return {MenuPage}
    */
   setId(id: string):MenuPage {
+    if (!id) throw new Error('ID cannot be empty');
     this.id = id;
     return this;
   }
@@ -69,6 +70,7 @@ export class MenuPage {
    * @return {MenuPage}
    */
   addEmbed(embed: MessageEmbed):MenuPage {
+    if (!embed) throw new Error('Embed cannot be empty');
     this.embeds.push(embed);
     return this;
   }
@@ -78,6 +80,7 @@ export class MenuPage {
    * @return {MenuPage}
    */
   setContent(content: string):MenuPage {
+    if (!content) throw new Error('Content cannot be empty');
     this.content = content;
     return this;
   }
@@ -89,6 +92,8 @@ export class MenuPage {
    * @return {MenuPage}
    */
   addButton(button: SingleButton):MenuPage {
+    if (!button) throw new Error('Button cannot be empty');
+
     this.buttons.push({
       label: button.label,
       emoji: button?.emoji,
@@ -106,6 +111,7 @@ export class MenuPage {
    * @return {MenuPage}
    */
   setTimeout(timeout: number):MenuPage {
+    if (!timeout) throw new Error('Timeout cannot be empty');
     this.timeout = timeout;
     return this;
   }
@@ -115,6 +121,7 @@ export class MenuPage {
    * @return {MenuPage}
    */
   addFile(file: MessageAttachment):MenuPage {
+    if (!file) throw new Error('File cannot be empty');
     this.files.push(file);
     return this;
   }

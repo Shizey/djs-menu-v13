@@ -1,12 +1,27 @@
 import {
+  CommandInteraction,
   EmojiIdentifierResolvable,
   MessageAttachment,
   MessageEmbed,
-  MessageSelectOptionData,
 } from 'discord.js';
+import randomId from '../Util/generateRandomId';
+import {Menu} from './Menu';
+import {MenuPage} from './Page';
 
 type SelectChoice = {
-  target: string;
+  target: string|((
+    page:MenuPage|MenuSelectPage, interaction:CommandInteraction, menu:Menu
+    ) => void);
+  label: string;
+  description?: string;
+  emoji?: EmojiIdentifierResolvable;
+}
+
+type MenuSelectChoice = {
+  target: string|((
+    page:MenuPage|MenuSelectPage, interaction:CommandInteraction, menu:Menu
+    ) => void);
+  value: string;
   label: string;
   description?: string;
   emoji?: EmojiIdentifierResolvable;
@@ -19,7 +34,7 @@ type SelectChoice = {
 export class MenuSelectPage {
   id: string;
   placeholder: string;
-  options: MessageSelectOptionData[];
+  options: MenuSelectChoice[];
   files: MessageAttachment[];
   content: string;
   timeout: number;
@@ -45,6 +60,7 @@ export class MenuSelectPage {
    * @return {MenuSelectPage}
    */
   setId(id: string):MenuSelectPage {
+    if (!id) throw new Error('The ID of the page can not be empty.');
     this.id = id;
     return this;
   }
@@ -54,6 +70,8 @@ export class MenuSelectPage {
    * @return {MenuSelectPage}
    */
   setPlaceholder(placeholder: string):MenuSelectPage {
+    // eslint-disable-next-line max-len
+    if (!placeholder) throw new Error('The placeholder of the page can not be empty.');
     this.placeholder = placeholder;
     return this;
   }
@@ -63,6 +81,7 @@ export class MenuSelectPage {
    * @return {MenuSelectPage}
    */
   addEmbed(embed: MessageEmbed):MenuSelectPage {
+    if (!embed) throw new Error('The embed can not be empty.');
     this.embeds.push(embed);
     return this;
   }
@@ -75,13 +94,25 @@ export class MenuSelectPage {
    * @return {MenuSelectPage}
    */
   addOptions(options: SelectChoice[]):MenuSelectPage {
+    if (!options) throw new Error('Options can not be empty.');
     options.forEach((option) =>{
-      this.options.push({
-        label: option.label,
-        value: option.target,
-        description: option?.description,
-        emoji: option?.emoji,
-      });
+      if (typeof option.target === 'function') {
+        this.options.push({
+          label: option.label,
+          target: option.target,
+          value: `${randomId()}.${this.id}`,
+          description: option?.description,
+          emoji: option?.emoji,
+        });
+      } else {
+        this.options.push({
+          label: option.label,
+          target: option.target,
+          value: `${randomId()}.${this.id}`,
+          description: option?.description,
+          emoji: option?.emoji,
+        });
+      }
     });
     return this;
   }
@@ -91,12 +122,24 @@ export class MenuSelectPage {
    * @return {MenuSelectPage}
    */
   addOption(option: SelectChoice):MenuSelectPage {
-    this.options.push({
-      label: option.label,
-      value: option.target,
-      description: option?.description,
-      emoji: option?.emoji,
-    });
+    if (!option) throw new Error('Option can not be empty.');
+    if (typeof option.target === 'function') {
+      this.options.push({
+        label: option.label,
+        target: option.target,
+        value: `${randomId()}.${this.id}`,
+        description: option?.description,
+        emoji: option?.emoji,
+      });
+    } else {
+      this.options.push({
+        label: option.label,
+        target: option.target,
+        value: `${randomId()}.${this.id}`,
+        description: option?.description,
+        emoji: option?.emoji,
+      });
+    }
     return this;
   }
   /**
@@ -105,6 +148,7 @@ export class MenuSelectPage {
    * @return {MenuSelectPage}
    */
   setContent(content: string):MenuSelectPage {
+    if (!content) throw new Error('Content cannot be empty');
     this.content = content;
     return this;
   }
@@ -115,6 +159,7 @@ export class MenuSelectPage {
    * @return {MenuSelectPage}
    */
   setTimeout(timeout: number):MenuSelectPage {
+    if (!timeout) throw new Error('Timeout can not be empty.');
     this.timeout = timeout;
     return this;
   }
@@ -125,6 +170,7 @@ export class MenuSelectPage {
    * @return {MenuSelectPage}
    */
   addFile(file: MessageAttachment):MenuSelectPage {
+    if (!file) throw new Error('File can not be empty.');
     this.files.push(file);
     return this;
   }
