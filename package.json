@@ -1,16 +1,34 @@
 {
   "name": "djs-menu-v13",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A module for create simple and complex menu for your Discord Bot",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "keywords": [
+    "discord",
+    "menu",
+    "bot",
+    "discord.js",
+    "typescript"
+  ],
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Shizey/djs-menu-v13.git"
+  },
+  "homepage": "https://github.com/Shizey/djs-menu-v13",
+  "bugs": {
+    "url": "https://github.com/Shizey/djs-menu-v13/issues"
+  },
   "scripts": {
     "build": "tsc",
     "debug": "tsc && node example/test.js",
     "lint": "npx tslint -c tslint.json 'src/**/*.ts'",
-    "doc": "npx typedoc src/index.ts"
+    "doc": "npx typedoc src/index.ts",
+    "prepublish": "npm run lint && npm run build && npm run doc"
   },
   "author": "Shizey & Hason",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "typescript": "^4.4.3"
   },
