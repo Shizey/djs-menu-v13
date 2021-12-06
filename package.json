@@ -1,6 +1,6 @@
 {
   "name": "djs-menu-v13",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A module for create simple and complex menu for your Discord Bot",
   "main": "build/index.js",
   "types": "build/index.d.ts",
