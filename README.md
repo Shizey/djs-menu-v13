@@ -15,6 +15,7 @@
 
 - [Documentation](https://shizey.github.io/djs-menu-v13/)
 - [GitHub Page](https://github.com/Shizey/djs-menu-v13)
+- [NPM Page](https://www.npmjs.com/package/djs-menu-v13)
 
 ## How to use it ?
 

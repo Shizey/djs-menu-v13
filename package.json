@@ -9,14 +9,18 @@
     "menu",
     "bot",
     "discord.js",
-    "typescript"
+    "djs",
+    "typescript",
+    "js",
+    "v13",
+    "interaction"
   ],
   "private": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/Shizey/djs-menu-v13.git"
   },
-  "homepage": "https://github.com/Shizey/djs-menu-v13",
+  "homepage": "https://shizey.github.io/djs-menu-v13/",
   "bugs": {
     "url": "https://github.com/Shizey/djs-menu-v13/issues"
   },
