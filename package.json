@@ -1,6 +1,6 @@
 {
   "name": "djs-menu-v13",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A module for create simple and complex menu for your Discord Bot",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -27,7 +27,7 @@
   "scripts": {
     "build": "tsc",
     "debug": "tsc && node example/test.js",
-    "lint": "npx tslint -c tslint.json 'src/**/*.ts'",
+    "lint": "npx eslint --ext .js,.ts src/ --fix",
     "doc": "npx typedoc src/index.ts",
     "prepublish": "npm run lint && npm run build && npm run doc"
   },
